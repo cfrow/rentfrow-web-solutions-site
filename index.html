@@ -479,10 +479,77 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
+    /* ── Mobile nav ── */
+    .nav-links { display: flex; gap: 2rem; }
+
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .nav-toggle span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--white);
+      transition: transform 0.25s, opacity 0.25s;
+    }
+
+    .nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-toggle.open span:nth-child(2) { opacity: 0; }
+    .nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .mobile-drawer {
+      display: none;
+      position: fixed;
+      top: 58px;
+      left: 0; right: 0;
+      z-index: 99;
+      background: rgba(13,27,62,0.97);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(0,229,255,0.12);
+      flex-direction: column;
+      padding: 0.5rem 1.4rem 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-8px);
+      transition: opacity 0.22s ease, transform 0.22s ease;
+    }
+
+    .mobile-drawer.open {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .mobile-drawer a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.9rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      transition: color 0.2s;
+    }
+
+    .mobile-drawer a:last-child { border-bottom: none; }
+    .mobile-drawer a:hover, .mobile-drawer a:active { color: var(--cyan); }
+
     /* ── Responsive ── */
     @media (max-width: 640px) {
       nav { padding: 1rem 1.4rem; }
       nav a.nav-link { display: none; }
+      .nav-toggle { display: flex; }
+      .mobile-drawer { display: flex; }
       .contact-box { padding: 2rem 1.4rem; }
     }
   </style>
@@ -492,11 +559,19 @@
   <!-- Nav -->
   <nav>
     <a href="#" class="nav-logo">Rentfrow <span>//</span> Web Solutions</a>
-    <div style="display:flex; gap:2rem;">
+    <div class="nav-links">
       <a href="#products" class="nav-link">Products</a>
       <a href="#contact" class="nav-link">Contact</a>
     </div>
+    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
+
+  <div class="mobile-drawer">
+    <a href="#products">Products</a>
+    <a href="#contact">Contact</a>
+  </div>
 
   <!-- Hero -->
   <section class="hero" id="home">
@@ -616,5 +691,23 @@
     &copy; 2026 Rentfrow Web Solutions, LLC &nbsp;·&nbsp; All rights reserved
   </footer>
 
+  <script>
+    const toggle = document.querySelector('.nav-toggle');
+    const drawer = document.querySelector('.mobile-drawer');
+
+    toggle.addEventListener('click', () => {
+      const open = toggle.classList.toggle('open');
+      drawer.classList.toggle('open', open);
+      toggle.setAttribute('aria-expanded', open);
+    });
+
+    drawer.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        toggle.classList.remove('open');
+        drawer.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+  </script>
 </body>
 </html>
